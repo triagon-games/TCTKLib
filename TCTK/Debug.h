@@ -23,7 +23,7 @@ namespace DEBUG
 #	ifdef _DEBUG
 		if (DEBUG_VERBOSITY_LEVEL >= verbosityLevel)
 		{
-			std::printf("[%s:%s:%s]: %s", Strings::getTimeFormatted()[0].c_str(), Strings::getTimeFormatted()[1].c_str(), Strings::getTimeFormatted()[2].c_str(), p.c_str());
+			std::printf("[%s:%s:%s]: %s", Strings::getTime()[0].c_str(), Strings::getTime()[1].c_str(), Strings::getTime()[2].c_str(), p.c_str());
 		}
 #	endif
 	}

@@ -5,10 +5,12 @@
 
 #include "pch.h"
 #include "DLLDefinitions.h"
+#include <assert.h>
+#define _CRT_SECURE_NO_WARNINGS
 
 namespace Strings
 {
-	TCTK_DLL template<typename... Rest> std::string string_sprintf(const char* format, Rest... args)
+	TCTK_DLL template<typename... Rest> std::string sprintf(const char* format, Rest... args)
 	{
 		int length = std::snprintf(nullptr, 0, format, args...);
 		assert(length >= 0);
@@ -19,12 +21,30 @@ namespace Strings
 		return str;
 	}
 
-	TCTK_DLL std::string* getTimeFormatted()
+	TCTK_DLL std::string replace(const char* _string, const char* _token, const char* _replacement)
+	{
+		std::string ret(_string);
+		std::string token(_token);
+		std::string replacement(_replacement);
+		if (token._Equal(replacement.c_str())) return ret;
+		int offset = 0;
+		int start_pos = (int)ret.find(token.c_str(), offset);
+		while (start_pos != -1)
+		{
+			ret.replace(start_pos, start_pos + token.size(), replacement.c_str());
+			offset += start_pos + (int)replacement.size();
+		}
+		return ret;
+	}
+
+	TCTK_DLL std::string* getTime()
 	{
 		time_t currentTime = std::time(NULL);
-		int hour = std::localtime(&currentTime)->tm_hour;
-		int minute = std::localtime(&currentTime)->tm_min;
-		int second = std::localtime(&currentTime)->tm_sec;
+		struct tm buf;
+		localtime_s(&buf, &currentTime);
+		int hour = buf.tm_hour;
+		int minute = buf.tm_min;
+		int second = buf.tm_sec;
 		std::string strHour = std::to_string(hour);
 		if (hour < 10)
 		{
