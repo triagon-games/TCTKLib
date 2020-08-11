@@ -64,6 +64,11 @@ namespace Logging
 		else err = TCTKError::Throw(0, __func__, "Success");
 		return err;
 	}
+
+	void Deinit()
+	{
+		delete &logger;
+	}
 }
 
 #define LOG_START std::exception_ptr EXPTR; \
