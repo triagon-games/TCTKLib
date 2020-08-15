@@ -1,0 +1,3 @@
+#ifndef DEBUG_VERBOSITY_LEVEL
+#define DEBUG_VERBOSITY_LEVEL 0
+#endif
