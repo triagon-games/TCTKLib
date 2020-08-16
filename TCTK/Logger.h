@@ -82,7 +82,7 @@ namespace Logging
 }\
 catch(std::exception& e)\
 {\
-Logging::Write(Strings::sprintf("An exception has occured: %s", e.what())); \
+Logging::Write(Strings::sprintf("An exception has occured in function (%s): %s", __func__, e.what())); \
 }
 
 #endif
