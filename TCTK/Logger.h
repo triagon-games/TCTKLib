@@ -11,15 +11,15 @@
 namespace Logging
 {
 	std::ofstream logger;
-	
+
 	TCTKError::C_Error Init(std::string filepath = "$H-$M-$S.log")
 	{
 		TCTKError::C_Error err;
 		std::string path;
-		std::string* time = Strings::getTime();
-		path = Strings::replace(filepath.c_str(), "$H", time[0].c_str());
-		path = Strings::replace(filepath.c_str(), "$M", time[1].c_str());
-		path = Strings::replace(filepath.c_str(), "$S", time[2].c_str());
+		Strings::TimeString ts = Strings::getTime();
+		path = Strings::replace(filepath.c_str(), "$H", ts.Hours.c_str());
+		path = Strings::replace(path.c_str(), "$M", ts.Minutes.c_str());
+		path = Strings::replace(path.c_str(), "$S", ts.Seconds.c_str());
 		logger.open(path.c_str());
 		if (!logger.is_open())
 		{
@@ -32,15 +32,15 @@ namespace Logging
 		return err;
 	}
 
-	TCTKError::C_Error Write(std::string message, std::string format = "[$D-$M-$S]: %s\n")
+	TCTKError::C_Error Write(std::string message, std::string format = "[$H-$M-$S]: %s\n")
 	{
 		TCTKError::C_Error err;
 		std::string write;
-		std::string* time = Strings::getTime();
-		write = Strings::replace(format.c_str(), "$H", time[0].c_str());
-		write = Strings::replace(format.c_str(), "$M", time[1].c_str());
-		write = Strings::replace(format.c_str(), "$S", time[2].c_str());
-		write = Strings::sprintf(format.c_str(), message);
+		Strings::TimeString ts = Strings::getTime();
+		write = Strings::replace(format.c_str(), "$H", ts.Hours.c_str());
+		write = Strings::replace(write.c_str(), "$M", ts.Minutes.c_str());
+		write = Strings::replace(write.c_str(), "$S", ts.Seconds.c_str());
+		write = Strings::sprintf(write.c_str(), message.c_str());
 
 		logger.write(write.c_str(), write.size());
 		if (logger.rdstate() != logger.goodbit)
@@ -71,14 +71,15 @@ namespace Logging
 	}
 }
 
-#define LOG_START std::exception_ptr EXPTR; \
-try{\
-	try{
-#define LOG_END }\
-catch(std::exception_ptr& ex)\
+#define LOG_START try\
+{\
+	try\
+	{
+#define LOG_END }catch (std::exception_ptr & ex)\
 {\
 	std::rethrow_exception(ex);\
-}}\
+}\
+}\
 catch(std::exception& e)\
 {\
 Logging::Write(Strings::sprintf("An exception has occured: %s", e.what())); \

@@ -10,6 +10,19 @@
 
 namespace Strings
 {
+	struct TimeString
+	{
+	public:
+		std::string Hours;
+		std::string Minutes;
+		std::string Seconds;
+		TimeString(std::string h, std::string m, std::string s)
+		{
+			Hours = h;
+			Minutes = m;
+			Seconds = s;
+		}
+	};
 	TCTK_DLL template<typename... Rest> std::string sprintf(const char* format, Rest... args)
 	{
 		int length = std::snprintf(nullptr, 0, format, args...);
@@ -31,13 +44,14 @@ namespace Strings
 		int start_pos = (int)ret.find(token.c_str(), offset);
 		while (start_pos != -1)
 		{
-			ret.replace(start_pos, start_pos + token.size(), replacement.c_str());
+			ret.replace(start_pos, token.size(), replacement.c_str());
 			offset += start_pos + (int)replacement.size();
+			start_pos = (int)ret.find(token.c_str(), offset);
 		}
 		return ret;
 	}
 
-	TCTK_DLL std::string* getTime()
+	TCTK_DLL TimeString getTime()
 	{
 		time_t currentTime = std::time(NULL);
 		struct tm buf;
@@ -62,8 +76,7 @@ namespace Strings
 		{
 			strSecond.insert(0, "0");
 		}
-		std::string ret[] = { strHour, strMinute, strSecond };
-		return ret;
+		return TimeString(strHour, strMinute, strSecond);
 	}
 }
 #endif
